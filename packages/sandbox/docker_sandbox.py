@@ -27,10 +27,12 @@ class DockerSandbox(Sandbox):
 
     def write_file(self, path: str, content: str) -> None:
         d = path.rsplit("/", 1)[0] or "/"
+         
+       
         subprocess.run(
             ["docker", "exec", "-i", self.name, "bash", "-c",
              f"mkdir -p {shlex.quote(d)} && cat > {shlex.quote(path)}"],
-            input=content, text=True, encoding="utf-8", check=True,
+            input=content.encode("utf-8"), check=True,
         )
 
     def checkpoint(self) -> str:

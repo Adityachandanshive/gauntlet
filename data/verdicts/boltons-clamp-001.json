@@ -1,0 +1,10 @@
+{
+  "task_id": "boltons-clamp-001",
+  "reasons": [],
+  "baseline": "pass",
+  "task_test_before_fix": "fail",
+  "reference_fix": "pass",
+  "full_suite_after_fix": "pass",
+  "repeatability": "10/10",
+  "status": "accepted"
+}

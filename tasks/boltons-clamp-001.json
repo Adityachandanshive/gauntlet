@@ -1,0 +1,12 @@
+{
+  "id": "boltons-clamp-001",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q tests/test_mathutils.py -k clamp",
+  "defect": {
+    "file": "boltons/mathutils.py",
+    "old": "return min(max(x, lower), upper)",
+    "new": "return max(min(x, lower), upper)"
+  }
+}
