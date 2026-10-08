@@ -1,0 +1,13 @@
+{
+  "id": "boltons2-011",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "The mean calculation incorrectly uses integer division, truncating decimal results instead of returning precise averages.",
+  "defect": {
+    "file": "boltons/statsutils.py",
+    "old": "        return sum(self.data, 0.0) / len(self.data)",
+    "new": "        return sum(self.data, 0.0) // len(self.data)"
+  }
+}

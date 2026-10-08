@@ -1,0 +1,13 @@
+{
+  "id": "boltons-004",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "HTTPS URLs incorrectly use port 80 instead of the standard port 443.",
+  "defect": {
+    "file": "boltons/urlutils.py",
+    "old": "                   'file': None, 'ftp': 21, 'git': 9418, 'gopher': 70,\n                   'http': 80, 'https': 443, 'imap': 143, 'ipp': 631,",
+    "new": "                   'file': None, 'ftp': 21, 'git': 9418, 'gopher': 70,\n                   'http': 80, 'https': 80, 'imap': 143, 'ipp': 631,"
+  }
+}

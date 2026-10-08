@@ -1,0 +1,13 @@
+{
+  "id": "boltons2-010",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "When adding the first element to an empty IndexedSet, the item is not found when checking for membership or when iterating.",
+  "defect": {
+    "file": "boltons/setutils.py",
+    "old": "            self.item_index_map[item] = len(self.item_list)\n            self.item_list.append(item)",
+    "new": "            self.item_index_map[item] = len(self.item_list) - 1\n            self.item_list.append(item)"
+  }
+}

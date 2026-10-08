@@ -1,0 +1,13 @@
+{
+  "id": "boltons2-001",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "When stripping trailing values from an iterable, the function stops early and omits the remaining elements if a non-stripped value is encountered after some stripped values.",
+  "defect": {
+    "file": "boltons/iterutils.py",
+    "old": "            if not broken:  # Return to caller here because the end of the\n                return     # iterator has been reached\n            yield from cache",
+    "new": "            if broken:  # Return to caller here because the end of the\n                return     # iterator has been reached\n            yield from cache"
+  }
+}

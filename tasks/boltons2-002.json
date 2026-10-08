@@ -1,0 +1,13 @@
+{
+  "id": "boltons2-002",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "When stripping leading values from an iterable, the first occurrence of the strip value is kept instead of being removed, and subsequent leading strip values are also kept.",
+  "defect": {
+    "file": "boltons/iterutils.py",
+    "old": "    iterator = iter(iterable)\n    for i in iterator:\n        if i != strip_value:\n            yield i\n            break\n    for i in iterator:\n        yield i",
+    "new": "    iterator = iter(iterable)\n    for i in iterator:\n        if i == strip_value:\n            yield i\n            break\n    for i in iterator:\n        yield i"
+  }
+}

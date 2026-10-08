@@ -1,0 +1,13 @@
+{
+  "id": "boltons-003",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "Percent-encoded strings are returned unchanged instead of being decoded.",
+  "defect": {
+    "file": "boltons/urlutils.py",
+    "old": "    if '%' not in string:\n        string.split\n        return string",
+    "new": "    if '%' in string:\n        string.split\n        return string"
+  }
+}

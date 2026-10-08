@@ -1,0 +1,13 @@
+{
+  "id": "boltons2-013",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "When multiple values have the same highest frequency, the mode returns the maximum value instead of the first one encountered in the data.",
+  "defect": {
+    "file": "boltons/statsutils.py",
+    "old": "        return Counter(self.data).most_common(1)[0][0]",
+    "new": "        return max(Counter(self.data).items(), key=lambda x: (x[1], x[0]))[0]"
+  }
+}

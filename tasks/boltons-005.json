@@ -1,0 +1,13 @@
+{
+  "id": "boltons-005",
+  "repo": "https://github.com/mahmoud/boltons",
+  "setup_cmd": "pip install -q -e . pytest",
+  "test_cmd": "pytest -q",
+  "task_test_cmd": "pytest -q",
+  "instruction": "Safe URL characters are incorrectly percent-encoded while reserved characters are left unencoded.",
+  "defect": {
+    "file": "boltons/urlutils.py",
+    "old": "        if c in safe_chars:",
+    "new": "        if c not in safe_chars:"
+  }
+}
