@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from packages.tracing import add_meta, bench_id, traceable
 from packages.sandbox.docker_sandbox import DockerSandbox
 
 
@@ -13,27 +14,27 @@ def edit(box, file, old, new):
     box.write_file(f"/repo/{file}", src.replace(old, new, 1))
 
 
-def validate(task: dict, repeats: int = 5) -> dict:
+def _validate(task: dict, repeats: int = 5) -> dict:
     v = {"task_id": task["id"], "reasons": []}
     boxes = []
     try:
         sb = DockerSandbox()
         boxes.append(sb)
+        v["sandbox_id"] = sb.name
         sb.run("apt-get update -qq && apt-get install -y -qq git", timeout=300)
         r = sb.run(f"git clone --depth 1 {task['repo']} /repo", timeout=300)
         if not r.ok:
             return {**v, "status": "rejected", "reasons": ["clone failed"]}
+        v["commit"] = sb.run("cd /repo && git rev-parse HEAD").stdout.strip()
         sb.run(f"cd /repo && {task['setup_cmd']}", timeout=900)
         cp = sb.checkpoint()
 
-        # 1. baseline must pass
         base = sb.fork(cp); boxes.append(base)
         r = base.run(f"cd /repo && {task['test_cmd']}", timeout=900)
         v["baseline"] = "pass" if r.ok else "fail"
         if not r.ok:
             v["reasons"].append("baseline suite fails")
 
-        # 2. defect applied: task test must FAIL with pytest exit code 1
         d = task["defect"]
         work = sb.fork(cp); boxes.append(work)
         edit(work, d["file"], d["old"], d["new"])
@@ -45,7 +46,6 @@ def validate(task: dict, repeats: int = 5) -> dict:
         if not all(c == 1 for c in fails):
             v["reasons"].append(f"task test not consistently failing: {fails}")
 
-        # 3. reference fix: task test must PASS and full suite must stay green
         edit(work, d["file"], d["new"], d["old"])
         passes = []
         for _ in range(repeats):
@@ -67,6 +67,16 @@ def validate(task: dict, repeats: int = 5) -> dict:
     finally:
         for b in boxes:
             b.destroy()
+
+
+@traceable(name="validation")
+def validate(task: dict, repeats: int = 5) -> dict:
+    add_meta(benchmark_id=bench_id(), repository=task["repo"], task_id=task["id"],
+             model=None, attempt=None, tavily_enabled=False)
+    v = _validate(task, repeats)
+    add_meta(success=v["status"] == "accepted", status=v["status"],
+             sandbox_id=v.get("sandbox_id"), commit=v.get("commit"))
+    return v
 
 
 if __name__ == "__main__":
